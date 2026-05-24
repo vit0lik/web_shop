@@ -2,6 +2,7 @@ import datetime
 
 from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column, validates
 from sqlalchemy import ForeignKey, DateTime, UniqueConstraint
+from __future__ import annotations
 
 
 class Base(DeclarativeBase):
@@ -21,7 +22,7 @@ class Customer(Base):
         DateTime(timezone=True), default=datetime.datetime.utcnow
     )
 
-    cart_items: Mapped[list["CartItem"]] = relationship(
+    cart_items: Mapped[list[CartItem]] = relationship(
         back_populates="customer", cascade="all, delete-orphan"
     )
 
@@ -47,7 +48,7 @@ class CartItem(Base):
         UniqueConstraint("id_customer", "id_product", name="uq_customer_product"),
     )
 
-    customer: Mapped["Customer"] = relationship(back_populates="cart_items")
+    customer: Mapped[Customer] = relationship(back_populates="cart_items")
 
     @validates("quantity")
     def validate_quantity(self, key, quantity):
